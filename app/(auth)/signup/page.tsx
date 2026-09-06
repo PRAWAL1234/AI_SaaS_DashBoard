@@ -1,11 +1,11 @@
 "use client";
 import {
+  App,
   Form,
   Input,
   Button,
   Checkbox,
   Divider,
-  message,
   Card,
   Flex,
   Typography,
@@ -33,21 +33,24 @@ type signupProps = {
 };
 
 export default function SignupPage() {
+  const { message } = App.useApp();
   const router = useRouter();
   const [form] = Form.useForm<signupProps>();
   const { signUp } = useLogin();
   const signupMutation = useMutation({
     mutationKey: ["SIGNUP"],
     mutationFn: async (payload: signupProps) => {
-      const data = await signUp(payload);
-      return data;
+      return await signUp(payload);
     },
     onSuccess(data, variables, context) {
-      // router.push(ROUTES.DASHBOARD);
+      router.push(ROUTES.LOGIN);
+      form.resetFields();
       message.success("Account created successfully!");
     },
-    onError() {
-      message.error("Failed to create account");
+    onError(error: any) {
+      message.error(
+        error?.response?.data?.detail || "Failed to create account",
+      );
     },
   });
   const onFinish = async () => {

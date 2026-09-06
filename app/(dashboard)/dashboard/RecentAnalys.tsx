@@ -1,40 +1,40 @@
-import React from "react";
-import { List, Card, Tag, Button, Listy } from "antd";
+import React, { useMemo } from "react";
+import { Listy, Card, Tag, Button, Spin, Flex } from "antd";
 import { FileTextOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/app/Routes/routes";
+import { useResumeUpload } from "@/app/hooks/useResume";
 
 const RecentAnalyses = () => {
-  // Mock data representing the list of recent resume analyses
+  const { getResumeByUserId } = useResumeUpload();
   const router = useRouter();
-  const data = [
-    {
-      id: 1,
-      fileName: "Alex_SoftwareEngin...",
-      status: "Completed",
-      time: "2 hours ago",
-      score: 85,
-    },
-    {
-      id: 2,
-      fileName: "Frontend_Dev_Resu...",
-      status: "Completed",
-      time: "Yesterday",
-      score: 92,
-    },
-    {
-      id: 3,
-      fileName: "Product_Manager_Dr...",
-      status: "Completed",
-      time: "Oct 12",
-      score: 74,
-    },
-  ];
 
+  const data = useMemo(
+    () =>
+      getResumeByUserId?.data?.slice(0, 4)?.map((item: any) => {
+        return {
+          id: item.id,
+          fileName: item.summary
+            ? `${item.summary.slice(0, 20)}...`
+            : `Resume #${item.id}`,
+          keyword_gaps: item.keyword_gaps,
+          time: item.created_at
+            ? new Date(item.created_at).toLocaleDateString()
+            : "Recent",
+          score: item.overall_score ?? 0,
+          status: "Completed",
+        };
+      }) || [],
+    [getResumeByUserId?.data],
+  );
+
+  const list = data;
   return (
-    <div
+    <Flex
+      flex={1}
+      vertical
       style={{
-        maxWidth: "360px",
+        width: "100%",
         margin: "20px auto",
         fontFamily: "sans-serif",
       }}
@@ -70,12 +70,11 @@ const RecentAnalyses = () => {
       {/* List container for the analyzed item cards */}
       <Listy
         items={data}
-        rowKey={(item) => item.id}
+        rowKey={(item: any) => item.id}
         itemRender={(item) => (
           <Card
             variant="borderless"
             style={{
-              marginBottom: "12px",
               borderRadius: "16px",
               background: "#ffffff",
             }}
@@ -191,7 +190,7 @@ const RecentAnalyses = () => {
           </Card>
         )}
       />
-    </div>
+    </Flex>
   );
 };
 

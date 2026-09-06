@@ -6,33 +6,75 @@ import {
   FileTextOutlined,
   BulbOutlined,
 } from "@ant-design/icons";
+import { useResume } from "@/app/services/Resume";
+import { useMutation } from "@tanstack/react-query";
+import * as pdfjsLib from "pdfjs-dist";
+import { useSyncUser } from "@/app/store/userStore";
+import { useResumeUpload } from "@/app/hooks/useResume";
 
 const { Dragger } = Upload;
+// PDF Worker Configuration
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 const ResumeUpload = () => {
   const { message } = App.useApp();
+  const { resumeMutation } = useResumeUpload();
+
+  const extractPdfText = async (file: File) => {
+    const pdf = await pdfjsLib.getDocument({
+      data: await file.arrayBuffer(),
+    }).promise;
+
+    let text = "";
+
+    for (let page = 1; page <= pdf.numPages; page++) {
+      const pdfPage = await pdf.getPage(page);
+
+      const content = await pdfPage.getTextContent();
+
+      text += content.items.map((item: any) => item.str).join(" ");
+
+      text += "\n";
+    }
+
+    return text;
+  };
+
+  // Main upload handler
+  const handleUpload = async (file: File) => {
+    try {
+      const text = await extractPdfText(file);
+
+      if (!text.trim()) {
+        message.error("No text found in resume");
+        return false;
+      }
+
+      const formData = new FormData();
+
+      formData.append("resume_text", text);
+
+      await resumeMutation.mutateAsync(formData);
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to read resume");
+    }
+
+    return false;
+  };
 
   // Upload configuration and restrictions
   const uploadProps = {
     name: "file",
     multiple: false,
-    action: "/api/upload", // Replace with your actual backend upload API endpoint
     accept: ".pdf,.docx,.txt",
-    beforeUpload: (file: any) => {
-      // Validate file size strictly under 5MB
-      const isLt5M = file.size / 1024 / 1024 < 5;
-      if (!isLt5M) {
-        message.error("File must be smaller than 5MB!");
+    beforeUpload: (file: File) => {
+      if (file.size > 5 * 1024 * 1024) {
+        message.error("File must be smaller than 5MB");
+        return Upload.LIST_IGNORE;
       }
-      return isLt5M || Upload.LIST_IGNORE;
-    },
-    onChange(info: any) {
-      const { status } = info.file;
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
+      handleUpload(file);
+      return false;
     },
   };
 
@@ -125,7 +167,15 @@ const ResumeUpload = () => {
               borderColor: "transparent",
               fontWeight: "500",
             }}
-            onClick={() => alert("Add your text paste logic here")}
+            onClick={(e) => {
+              e.stopPropagation();
+              const text = prompt("Enter your resume text here:");
+              if (text && text.trim()) {
+                const formData = new FormData();
+                formData.append("resume_text", text.trim());
+                resumeMutation.mutateAsync(formData);
+              }
+            }}
           >
             Or paste text here
           </Button>

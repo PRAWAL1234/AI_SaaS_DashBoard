@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Layout, Menu, Avatar, Input, Badge, Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import {
@@ -22,6 +22,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ROUTES } from "../Routes/routes";
 import AuthGuard from "./AuthGuard";
+import { useUserStore, useSyncUser } from "../store/userStore";
 
 const { Sider, Header, Content } = Layout;
 
@@ -65,11 +66,13 @@ export default function DashboardLayout({
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const clearUserData = useUserStore((state: any) => state?.clearUserData);
+  const { userName } = useSyncUser();
 
   const handleLogout = () => {
-    document.cookie.replace("auth_token", "");
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("user");
+    document.cookie =
+      "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0";
+    clearUserData();
     window.location.href = ROUTES.LOGIN;
   };
 
@@ -243,7 +246,7 @@ export default function DashboardLayout({
                         color: "#111827",
                       }}
                     >
-                      User Name
+                      {userName}
                     </div>
                     <div style={{ fontSize: 11, color: "#9CA3AF" }}>
                       Free Plan

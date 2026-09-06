@@ -1,12 +1,12 @@
 "use client";
 
 import {
+  App,
   Form,
   Input,
   Button,
   Checkbox,
   Divider,
-  message,
   Card,
   Flex,
   Typography,
@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { ROUTES } from "../../Routes/routes";
 import useLogin from "@/app/services/auth";
 import { useMutation } from "@tanstack/react-query";
-
+import { useUserStore } from "../../store/userStore";
 type loginProps = {
   emailOrUsername: string;
   password: string;
@@ -30,9 +30,11 @@ type loginProps = {
 };
 
 export default function LoginPage() {
+  const { message } = App.useApp();
   const router = useRouter();
   const [form] = Form.useForm<loginProps>();
   const { login } = useLogin();
+  const setUserData = useUserStore((state: any) => state.setUserData);
 
   const loginMutation = useMutation({
     mutationKey: ["Login"],
@@ -40,14 +42,23 @@ export default function LoginPage() {
       return await login(payload);
     },
     onSuccess(data) {
-      document.cookie = `auth_token=${data?.access_token}`;
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("user", JSON.stringify(data?.user_data));
+      document.cookie = `auth_token=${data?.access_token}; path=/; max-age=86400`;
+      if (data?.user_data) {
+        setUserData(
+          data?.user_data?.id,
+          data?.user_data?.username,
+          data?.user_data?.email,
+        );
+      }
       router.push(ROUTES.DASHBOARD);
+      form.resetFields();
       message.success("Login successful!");
     },
-    onError() {
-      message.error("Invalid email or password. Please try again.");
+    onError(error: any) {
+      message.error(
+        error?.response?.data?.detail ||
+          "Invalid email or password. Please try again.",
+      );
     },
   });
 
