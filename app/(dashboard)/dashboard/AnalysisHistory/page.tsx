@@ -1,57 +1,35 @@
 "use client";
 
-import React from "react";
-import { Card, Button, Progress, Tag, Flex, Dropdown, Avatar } from "antd";
+import React, { useMemo } from "react";
+import { Card, Button, Progress, Tag, Flex, Dropdown, Avatar, App } from "antd";
 import {
   FilterOutlined,
   CalendarOutlined,
   FolderOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
+import { useResumeUpload } from "@/app/hooks/useResume";
 
 export default function AnalysisHistory() {
-  // Mock data matching the UI cards exactly
-  const historyData = [
-    {
-      id: 1,
-      name: "John Doe",
-      role: "Senior Frontend Engineer",
-      initials: "JD",
-      avatarColor: "#eff6ff",
-      avatarTextColor: "#1d4ed8",
-      matchScore: 85,
-      progressBarColor: "#4f46e5",
-      skills: ["React", "TypeScript", "Tailwind"],
-      date: "Oct 24, 2023",
-      team: "Tech Team",
-    },
-    {
-      id: 2,
-      name: "Alice Smith",
-      role: "UX Designer",
-      initials: "AS",
-      avatarColor: "#f0fdf4",
-      avatarTextColor: "#15803d",
-      matchScore: 92,
-      progressBarColor: "#4f46e5",
-      skills: ["Figma", "Prototyping", "User Research"],
-      date: "Oct 23, 2023",
-      team: "Design Team",
-    },
-    {
-      id: 3,
-      name: "Robert Johnson",
-      role: "Backend Developer",
-      initials: "RJ",
-      avatarColor: "#fef2f2",
-      avatarTextColor: "#b91c1c",
-      matchScore: 65,
-      progressBarColor: "#4b5563", // Grey bar for moderate scores like image
-      skills: ["Node.js", "PostgreSQL", "AWS"],
-      date: "Oct 20, 2023",
-      team: "Tech Team",
-    },
-  ];
+  const { getResumeByUserId } = useResumeUpload();
+  const rawList = getResumeByUserId?.data || [];
+  const historyData = useMemo(
+    () =>
+      rawList.slice(0, 4).map((item: any) => ({
+        id: 1,
+        name: "John Doe",
+        role: "Senior Frontend Engineer",
+        initials: "JD",
+        avatarColor: "#eff6ff",
+        avatarTextColor: "#1d4ed8",
+        matchScore: 85,
+        progressBarColor: "#4f46e5",
+        skills: ["React", "TypeScript", "Tailwind"],
+        date: "Oct 24, 2023",
+        team: "Tech Team",
+      })),
+    [rawList],
+  );
 
   // Filter dropdown menu option items
   const filterMenuItems: MenuProps["items"] = [
@@ -114,7 +92,7 @@ export default function AnalysisHistory() {
           alignItems: "start",
         }}
       >
-        {historyData.map((item) => (
+        {historyData.map((item: any) => (
           <Card
             key={item.id}
             variant="borderless"
@@ -205,7 +183,7 @@ export default function AnalysisHistory() {
               gap={8}
               style={{ marginBottom: "24px", minHeight: "32px" }}
             >
-              {item.skills.map((skill, index) => (
+              {item.skills.map((skill: any, index: number) => (
                 <Tag
                   key={index}
                   style={{

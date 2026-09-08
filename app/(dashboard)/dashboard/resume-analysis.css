@@ -1,0 +1,495 @@
+/* =========================================
+   LIGHT MODE (DEFAULT)
+========================================= */
+
+.resume-analysis-page {
+  --analysis-bg: #f7f8fc;
+  --analysis-card: #ffffff;
+  --analysis-border: #e8e8ef;
+
+  --analysis-text: #1f1f28;
+  --analysis-muted: #6f7080;
+
+  --analysis-item-bg: #fafafe;
+  --analysis-item-hover: #f4f1ff;
+
+  --analysis-progress-trail: #ececf2;
+
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24;
+
+  background: var(--analysis-bg);
+  color: var(--analysis-text);
+}
+
+
+/* =========================================
+   DARK MODE
+========================================= */
+
+.dark .resume-analysis-page,
+[data-theme="dark"] .resume-analysis-page {
+  --analysis-bg: #101014;
+  --analysis-card: #18181f;
+  --analysis-border: #2b2b35;
+
+  --analysis-text: #f4f4f6;
+  --analysis-muted: #a0a0ad;
+
+  --analysis-item-bg: #202027;
+  --analysis-item-hover: #272730;
+
+  --analysis-progress-trail: #30303a;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  gap: 20px;
+  margin-bottom: 24px;
+
+  flex-wrap: wrap;
+}
+
+.analysis-title.ant-typography {
+  margin-bottom: 4px !important;
+  color: var(--analysis-text) !important;
+}
+
+.analysis-subtitle {
+  color: var(--analysis-muted) !important;
+}
+
+
+/* =========================================
+   DATE BADGES
+========================================= */
+
+.date-badge {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 7px 10px;
+
+  background: var(--analysis-card);
+  border: 1px solid var(--analysis-border);
+
+  border-radius: 7px;
+
+  color: var(--analysis-muted);
+  font-size: 12px;
+}
+
+
+/* =========================================
+   CARDS
+========================================= */
+
+.analysis-card.ant-card {
+  height: 100%;
+
+  background: var(--analysis-card) !important;
+  border: 1px solid var(--analysis-border) !important;
+
+  border-radius: 12px !important;
+
+  box-shadow: none !important;
+}
+
+.analysis-card .ant-card-body {
+  padding: 20px;
+}
+
+
+/* =========================================
+   SECTION
+========================================= */
+
+.top-section,
+.middle-section {
+  margin-bottom: 20px;
+}
+
+.section-heading,
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.section-heading {
+  align-items: center;
+}
+
+.section-title-row {
+  align-items: flex-start;
+}
+
+.section-label {
+  color: var(--analysis-muted) !important;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  letter-spacing: 1px;
+}
+
+.icon-title {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+}
+
+.icon-title h4.ant-typography,
+.icon-title h5.ant-typography {
+  color: var(--analysis-text) !important;
+  margin: 0 !important;
+}
+
+.section-description {
+  display: block;
+
+  margin-top: 8px;
+
+  color: var(--analysis-muted) !important;
+
+  font-size: 12px;
+}
+
+.muted-text {
+  color: var(--analysis-muted) !important;
+}
+
+
+/* =========================================
+   SCORE
+========================================= */
+
+.score-content {
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+  margin-top: 26px;
+}
+
+.score-number {
+  font-size: 28px;
+  font-weight: 700;
+
+  color: var(--analysis-text);
+}
+
+.score-total {
+  color: var(--analysis-muted);
+  font-size: 11px;
+}
+
+.score-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.score-details h4.ant-typography {
+  margin: 0 !important;
+  color: var(--analysis-text) !important;
+}
+
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.summary-text {
+  margin-top: 20px !important;
+
+  color: var(--analysis-muted) !important;
+
+  line-height: 1.8;
+}
+
+.summary-tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+
+/* =========================================
+   ICONS
+========================================= */
+
+.primary-icon {
+  color: #7c3aed;
+}
+
+.warning-icon {
+  color: #f59e0b;
+}
+
+.success-icon {
+  color: #22c55e;
+}
+
+
+/* =========================================
+   KEYWORDS
+========================================= */
+
+.keywords-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 22px;
+}
+
+.keyword-tag.ant-tag {
+  margin: 0;
+
+  padding: 6px 10px;
+
+  background: var(--analysis-item-bg);
+  border: 1px solid var(--analysis-border);
+
+  border-radius: 6px;
+
+  color: #8b5cf6;
+}
+
+
+/* =========================================
+   FORMATTING SUGGESTIONS
+========================================= */
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  background: var(--analysis-item-bg);
+  border: 1px solid var(--analysis-border);
+
+  border-radius: 8px;
+
+  transition: 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background: var(--analysis-item-hover);
+}
+
+.suggestion-item .ant-typography {
+  color: var(--analysis-text) !important;
+
+  font-size: 13px;
+}
+
+
+/* =========================================
+   ACTIONABLE STEPS
+========================================= */
+
+.actionable-card {
+  margin-bottom: 24px;
+}
+
+.steps-grid {
+  margin-top: 20px;
+}
+
+.step-card {
+  height: 100%;
+  min-height: 180px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 16px;
+
+  background: var(--analysis-item-bg);
+
+  border: 1px solid var(--analysis-border);
+  border-radius: 10px;
+
+  transition: all 0.2s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-3px);
+  background: var(--analysis-item-hover);
+  border-color: #8b5cf6;
+}
+
+.step-number {
+  width: fit-content;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  background: #ede9fe;
+  color: #7c3aed;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dark .step-number,
+[data-theme="dark"] .step-number {
+  background: #2e2445;
+  color: #c4b5fd;
+}
+
+.step-card h5.ant-typography {
+  margin: 16px 0 8px !important;
+
+  color: var(--analysis-text) !important;
+}
+
+.step-text {
+  flex: 1;
+
+  color: var(--analysis-muted) !important;
+
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.step-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 18px;
+}
+
+.action-text {
+  color: #7c3aed !important;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.bottom-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 12px;
+}
+
+.primary-button.ant-btn-primary {
+  background: #7c3aed !important;
+  border-color: #7c3aed !important;
+}
+
+.primary-button.ant-btn-primary:hover {
+  background: #8b5cf6 !important;
+}
+
+.secondary-button.ant-btn {
+  background: var(--analysis-card) !important;
+
+  border-color: var(--analysis-border) !important;
+
+  color: var(--analysis-text) !important;
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.resume-analysis-empty {
+  min-height: 60vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 992px) {
+  .score-content {
+    gap: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-analysis-page {
+    padding: 16px;
+  }
+
+  .analysis-header {
+    flex-direction: column;
+  }
+
+  .score-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .bottom-actions {
+    flex-direction: column-reverse;
+  }
+
+  .bottom-actions .ant-btn {
+    width: 100%;
+  }
+
+  .date-badge {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .analysis-card .ant-card-body {
+    padding: 16px;
+  }
+
+  .analysis-title.ant-typography {
+    font-size: 22px;
+  }
+
+  .summary-tags {
+    gap: 6px;
+  }
+}

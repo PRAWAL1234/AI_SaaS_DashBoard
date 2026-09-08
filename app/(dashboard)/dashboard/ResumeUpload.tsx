@@ -12,13 +12,16 @@ import * as pdfjsLib from "pdfjs-dist";
 import { useSyncUser } from "@/app/store/userStore";
 import { useResumeUpload } from "@/app/hooks/useResume";
 
+import mammoth from "mammoth";
+
 const { Dragger } = Upload;
 // PDF Worker Configuration
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 const ResumeUpload = () => {
   const { message } = App.useApp();
-  const { resumeMutation } = useResumeUpload();
+  const [fileName, setFileName] = React.useState<string>("resume.txt");
+  const { resumeMutation } = useResumeUpload(fileName);
 
   const extractPdfText = async (file: File) => {
     const pdf = await pdfjsLib.getDocument({
@@ -40,24 +43,47 @@ const ResumeUpload = () => {
     return text;
   };
 
+  const extractTextFromFile = async (file: File) => {
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith(".txt") || file.type === "text/plain") {
+      return await file.text();
+    }
+
+    if (
+      fileName.endsWith(".docx") ||
+      file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value;
+    }
+
+    // Default to PDF
+    return await extractPdfText(file);
+  };
+
   // Main upload handler
   const handleUpload = async (file: File) => {
     try {
-      const text = await extractPdfText(file);
+      setFileName(file.name);
+      const text = await extractTextFromFile(file);
 
-      if (!text.trim()) {
+      if (!text || !text.trim()) {
         message.error("No text found in resume");
         return false;
       }
 
       const formData = new FormData();
 
-      formData.append("resume_text", text);
+      formData.append("resume_text", text.trim());
+      formData.append("fileName", file.name);
 
       await resumeMutation.mutateAsync(formData);
     } catch (error) {
       console.error(error);
-      message.error("Failed to read resume");
+      message.error("Failed to read resume file");
     }
 
     return false;
@@ -93,12 +119,12 @@ const ResumeUpload = () => {
           background: "#f9faff",
           border: "1px dashed #d9d9d9",
           borderRadius: "12px",
-          padding: "24px",
+          padding: "20px",
         }}
         showUploadList={false}
       >
         {/* Document Icon Wrapper */}
-        <div className="ant-upload-drag-icon" style={{ marginBottom: "16px" }}>
+        <div className="ant-upload-drag-icon">
           <div
             style={{
               display: "inline-flex",
@@ -173,6 +199,7 @@ const ResumeUpload = () => {
               if (text && text.trim()) {
                 const formData = new FormData();
                 formData.append("resume_text", text.trim());
+                formData.append("fileName", "pasted_resume.txt");
                 resumeMutation.mutateAsync(formData);
               }
             }}

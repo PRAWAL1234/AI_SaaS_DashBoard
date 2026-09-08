@@ -2,7 +2,7 @@ import { useApi } from "@/API/useAPI";
 
 export const useResume = () => {
    const {baseApi} = useApi();
-  const uploadResume = async (userId: number, resumeData: FormData | string) => {
+  const uploadResume = async (userId: number, fileName: string, resumeData: FormData | string) => {
     let body: FormData;
     if (resumeData instanceof FormData) {
       body = resumeData;
@@ -10,6 +10,12 @@ export const useResume = () => {
       body = new FormData();
       body.append("resume_text", resumeData);
     }
+    if (fileName && !body.has("fileName")) {
+      body.append("fileName", fileName);
+    } else if (!body.has("fileName")) {
+      body.append("fileName", "resume.txt");
+    }
+
     const response = await baseApi().post(
       `/resume/uploadResume?user_id=${userId}`,
       body,
